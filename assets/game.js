@@ -13,7 +13,7 @@ var database = firebase.database();
 
 
 var name = "";
-var 
+var choice = "";
 
 var connectionsRef = database.ref("/connections");
 var connectedRef = database.ref(".info/connected");
@@ -23,19 +23,33 @@ connectedRef.on("value", function(snap) {
   if (snap.val()) {
     // Add user to the connections list.
     var con = connectionsRef.push(true);
+
+    connectionsRef.on("value", function(snap) {
+      // Display the viewer count in the html.
+      // The number of online users is the number of children in the connections list.
+      $("#NumberTest").html(snap.numChildren());
+      console.log("soemthing");
+    });
+
+    $("#addPlayer").on("click", function(event) {
+    name = $("#name-input").val().trim();
+    database.ref("/connections").push({
+        name: name
+    });
+    $("#userName").html("Logged in as: " + name);
+    console.log("something else");
+  });
+
+
+
+
+
+
+
+
     // Remove user from the connection list when they disconnect.
     con.onDisconnect().remove();
   }
 });
 
 
-connectionsRef.on("value", function(snap) {
-  // Display the viewer count in the html.
-  // The number of online users is the number of children in the connections list.
-  $("#NumberTest").html(snap.numChildren());
-  console.log("soemthing");
-});
-
-
-
-var name = "";
